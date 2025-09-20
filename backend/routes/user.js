@@ -7,7 +7,7 @@ const router = express.Router()
 
 // GET - get all users
 router.get("/", (req, res) => {
-  res.send("Listing all users...")
+ cost 
 })
 
 module.exports = router
