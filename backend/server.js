@@ -1,48 +1,32 @@
-// backend/server.js
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import cors from "cors";
-import userRouter from "./routes/user.js";
+//dependencies
+require("dotenv").config()
+const bodyParser=require("body-parser")
+const express = require("express")
+const mongoose = require("mongoose")
+const cors = require("cors")
+const port = process.env.PORT || 3000
+
+//database connection
 
 
-dotenv.config();
-
-const app = express();
-app.use(cors());                 // helpful when you build the SPA later
-app.use(express.json());         // replaces body-parser per course notes
-
-const { MONGODB_URI, PORT = 5000 } = process.env;
-
-if (!MONGODB_URI) {
-  console.error("Missing MONGODB_URI in .env");
-  process.exit(1);
-}
-
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
-  });
+//express app setup 
+const app = express()
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
+app.use('*',cors())
 
 
 //routes
-
-// homepage
-app.get("/", (_req, res) => {
-  res.status(200).json({ msg: "DIG31 backend up 🚀" });
-});
-
+//homepage
+app.get('/', (req,res) => {
+  res.send("This is the homepage")
+})
 
 //user
+const userRouter = require("./routes/user")
 app.use('/user', userRouter)
 
-
-// TODO: In Exercise 2C you’ll split routes:
-// app.use("/user", userRouter)
-// app.use("/auth", authRouter)
-
-app.listen(PORT, () => console.log(`API listening on http://localhost:${PORT}`));
-
+//run app (listen on port)
+app.listen(port, () => {
+  console.log ("App is running on port", port)
+})

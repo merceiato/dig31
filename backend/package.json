@@ -1,7 +1,6 @@
 {
   "name": "dig31-backend",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "nodemon --watch . server.js",
     "start": "node server.js"
