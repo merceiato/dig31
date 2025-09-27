@@ -1,5 +1,8 @@
 // Utils class
+require("dotenv").config()
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+
 
 class Utils {
   // takes a password and hashes it (encrypts)
@@ -20,6 +23,11 @@ class Utils {
       .toString("hex");
     return hash === originalHash;
   }
+
+  generateAccessToken(user) {
+  return jwt.sign({ user: user }, process.env.JWT_SECRET, { expiresIn: "30m" });
+}
+
 }
 
 module.exports = new Utils();
