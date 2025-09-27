@@ -25,7 +25,7 @@ class Utils {
   }
 
   generateAccessToken(user) {
-  return jwt.sign({ user: user }, process.env.JWT_SECRET, { expiresIn: "30m" });
+  return jwt.sign({ user: user }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
 }
 
 }

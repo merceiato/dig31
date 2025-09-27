@@ -1,9 +1,12 @@
 // Auth routes
 // dependencies
+require("dotenv").config()
 const express = require("express")
 const router = express.Router()
 const User = require("../models/User")
 const Utils = require("../Utils")
+const jwt = require("jsonwebtoken");
+
 
 // POST /auth/signin -------------------------------------------------
 router.post('/signin', (req, res) => {
@@ -24,7 +27,11 @@ router.post('/signin', (req, res) => {
         });
       }
 
-      // 3. user exists > verify password
+    //   // 3. user exists > verify password
+    //     console.log("DB password:", user.password);
+    //     console.log("Entered password:", req.body.password);
+    //     console.log("Verify result:", Utils.verifyPassword(req.body.password, user.password));
+
       if (Utils.verifyPassword(req.body.password, user.password)) {
         // 4. password verified > create user object
         const userObject = {
@@ -58,5 +65,32 @@ router.post('/signin', (req, res) => {
       });
     });
 });
+
+
+
+// GET /auth/validate ----------------------
+router.get('/validate', (req, res) => {
+  // get token from header (handle missing header safely)
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.sendStatus(401); // Unauthorized if no token
+  }
+
+  // validate the token using jwt.verify()
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, tokenData) => {
+    if (err) {
+      // token invalid
+      return res.sendStatus(403); // Forbidden
+    }
+
+    // token must be valid!
+    // send back the tokenData (decrypted payload) as response
+    res.json(tokenData);
+  });
+});
+
+
 
 module.exports = router
