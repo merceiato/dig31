@@ -27,6 +27,20 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
+
+// hash password (middleware)
+userSchema.pre('save', function (next) {
+  // check if password is present and is modified
+  if (this.password && this.isModified('password')) {
+    // replace original password with new hashed password
+    this.password = Utils.hashPassword(this.password);
+  }
+
+  // continue
+  next();
+});
+
+
 // create mongoose model
 //add exact name at end coz sometimes the pluralisation doesnt work
 const userModel = mongoose.model('User', userSchema, 'users')

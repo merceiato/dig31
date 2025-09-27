@@ -2,6 +2,7 @@
 const express = require("express")
 const router = express.Router()
 const User = require("./../models/User")
+const Utils = require("../Utils")
 
 // GET - get all users ---------------------------------------------------------------------------------
 router.get("/", async (req, res) => {
@@ -47,6 +48,14 @@ router.post("/", (req, res) => {
     })
   }
 
+
+  User.findOne({ email: req.body.email })
+  .then(user => {
+    if (user != null) {
+      return res.status(400).json({
+        message: "email already in use"
+      })
+    }
   // create a new user document using the User model
   const newUser = new User({
     firstName: req.body.firstName,
@@ -69,6 +78,15 @@ router.post("/", (req, res) => {
         error: err,
       })
     })
+    
+  })
+  .catch(err => {
+    console.log(err)
+    res.status(500).json({
+      message: "problem creating account"
+    })
+  })
+
 })
 
 // PUT - update user by id ==================================================
